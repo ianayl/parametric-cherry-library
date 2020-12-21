@@ -62,7 +62,8 @@ cap_sculpt_tilt = -1; // 1 for positive tilt, -1 for negative tilt
 cap_indent = 0.75;
 
 // cap cutout
-cutout_len = top_ver_len + 2.25;
+cutout_len = top_ver_len + 0.75;
+cutout_r = 32;
 
 difference() {
     hull() {
@@ -71,6 +72,7 @@ difference() {
         
         // top face of cap
         translate([top_hor_margin, top_ver_margin, cap_height]) {
+            // round_square(top_r, top_hor_len, top_ver_len);
             rotate(a = cap_sculpt_tilt * cap_sculpt_angle, v = X_AXIS) {
                 round_square(top_r, top_hor_len, top_ver_len);
             }
@@ -78,11 +80,13 @@ difference() {
     }
     
     // cup cutout
-    translate([9, 3 + 14.75 , 9.5 - sin(11) * 15 - cap_indent]) {
-        rotate(a = -11, v = [1, 0, 0]) {
-            translate([0,0,32]) {
-                rotate(a = 90, v = [1, 0, 0]) {
-                    cylinder(h = cutout_len, r = 32);
+    translate([base_side_len / 2,
+              top_ver_margin + top_ver_len,
+              cap_height - sin(cap_sculpt_angle) * cutout_len - cap_indent]) {
+        rotate(a = cap_sculpt_tilt * cap_sculpt_angle, v = X_AXIS) {
+            translate([0, 0, cutout_r]) {
+                rotate(a = 90, v = X_AXIS) {
+                    cylinder(h = cutout_len, r = cutout_r);
                 }
             }
         }
@@ -90,3 +94,14 @@ difference() {
 }
 // keycap side length: 18
 
+// hull() {
+//     // base face of cap
+//     round_square(base_r, base_side_len, base_side_len);
+//     
+//     // top face of cap
+//     translate([top_hor_margin, top_ver_margin, cap_height]) {
+//         rotate(a = cap_sculpt_tilt * cap_sculpt_angle, v = X_AXIS) {
+//             round_square(top_r, top_hor_len, top_ver_len);
+//         }
+//     }
+// }
